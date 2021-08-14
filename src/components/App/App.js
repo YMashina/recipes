@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import axios from "axios";
-import { Container, Row, Col } from "shards-react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shards-ui/dist/css/shards.min.css";
 import MainDiv from "../styled/MainDiv";
 import Spinner from "../styled/Spinner";
 import RecipeCardSmall from "../RecipeCardSmall/RecipeCardSmall";
-import CardsDiv from "../styled/CardsDiv";
 import Search from "../Search/Search";
-import { makeFeed } from "./constants";
+import { generateHexString } from "./constants";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import SearchQuery from "../styled/searchQuery";
 
-function App() {
+const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [feed, setFeed] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
 
   const getRecipes = useCallback(async () => {
     const options = {
@@ -22,7 +23,7 @@ function App() {
         maxResult: "10",
         start: "0",
         FAT_KCALMax: "1000",
-        q: "chicken",
+        q: searchQuery,
         maxTotalTimeInSeconds: "7200",
       },
       headers: {
@@ -35,56 +36,59 @@ function App() {
       .request(options)
       .then(function (response) {
         console.log(response.data);
-        /*
-        let feedState = [];
-        const groupSize = response.data.feed.length / 3;
-        while (response.data.feed.length > 0) {
-          feedState.push(response.data.feed.splice(0, groupSize));
-        }*/
-        setFeed(makeFeed(response.data.feed, 3));
+        setFeed(response.data.feed);
         setIsLoading(false);
       })
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [searchQuery]);
 
   useEffect(() => {
+    setIsLoading(true);
     getRecipes();
-  }, [getRecipes]);
+  }, [getRecipes, searchQuery]);
+
+  const requestSearchQuery = (query) => {
+    console.log(query);
+    setSearchQuery(query);
+  };
 
   return (
     <MainDiv>
-      <Search />
-      <CardsDiv>
-        <Container>
-          <Row>
-            {isLoading ? (
-              <Spinner />
-            ) : (
-              feed.map((feedGroup) => {
-                return (
-                  <Col>
-                    {feedGroup.map((feedItem) => (
-                      <Row>
-                        <RecipeCardSmall
-                          name={feedItem.display.displayName}
-                          image={feedItem.display.images[0]}
-                          time={feedItem.content.details.totalTime}
-                          ingredients={feedItem.content.ingredientLines}
-                          sourceURL={feedItem.display.source.sourceRecipeUrl}
-                        />
-                      </Row>
-                    ))}
-                  </Col>
-                );
-              })
-            )}
-          </Row>
-        </Container>
-      </CardsDiv>
+      <Search requestSearchQuery={(query) => requestSearchQuery(query)} />
+      {searchQuery === "" ? null : (
+        <SearchQuery>You searched: "{searchQuery}".</SearchQuery>
+      )}
+
+      {isLoading === true || feed.length > 0 ? null : (
+        <SearchQuery>Sorry, nothing found.</SearchQuery>
+      )}
+
+      <ResponsiveMasonry
+        columnsCountBreakPoints={{ 300: 1, 600: 2, 900: 3, 1200: 4, 1500: 5 }}
+      >
+        <Masonry>
+          {isLoading ? (
+            <Spinner />
+          ) : (
+            feed.map((feedItem) => {
+              return (
+                <RecipeCardSmall
+                  key={generateHexString()}
+                  name={feedItem.display.displayName}
+                  image={feedItem.display.images[0]}
+                  time={feedItem.content.details.totalTime}
+                  ingredients={feedItem.content.ingredientLines}
+                  sourceURL={feedItem.display.source.sourceRecipeUrl}
+                />
+              );
+            })
+          )}
+        </Masonry>
+      </ResponsiveMasonry>
     </MainDiv>
   );
-}
+};
 
 export default App;

@@ -8,6 +8,8 @@ import {
   CardBody,
   CardFooter,
   Button,
+  CardText,
+  CardDeck,
 } from "shards-react";
 import CardsImg from "../styled/CardsImg";
 import CardsDiv from "../styled/CardsDiv";
@@ -16,10 +18,11 @@ const RecipeCardSmall = ({ name, image, time, ingredients, sourceURL }) => {
   return (
     <CardsDiv>
       <Card style={{ maxWidth: "20rem" }}>
+        <CardImg top src={image} />
         <CardBody>
-          <CardsImg src={image} />
           <CardTitle>{name}</CardTitle>
-          <p>Total time: {time}</p>
+          <CardText>Total time: {time}</CardText>
+
           <p>
             Ingredients:{" "}
             {ingredients.map(
