@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "shards-ui/dist/css/shards.min.css";
@@ -14,14 +14,15 @@ const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [feed, setFeed] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [numResults, setNumResults] = useState(0);
   const getRecipes = useCallback(async () => {
     const options = {
       method: "GET",
       url: "https://yummly2.p.rapidapi.com/feeds/search",
       params: {
-        maxResult: "10",
-        start: "0",
+        maxResult: itemsPerPage.toString(),
+        start: "18",
         FAT_KCALMax: "1000",
         q: searchQuery,
         maxTotalTimeInSeconds: "7200",
@@ -36,18 +37,19 @@ const App = () => {
       .request(options)
       .then(function (response) {
         console.log(response.data);
+        setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
         setIsLoading(false);
       })
       .catch(function (error) {
         console.error(error);
       });
-  }, [searchQuery]);
+  }, [searchQuery, itemsPerPage]);
 
   useEffect(() => {
     setIsLoading(true);
     getRecipes();
-  }, [getRecipes, searchQuery]);
+  }, [getRecipes, searchQuery, itemsPerPage]);
 
   const requestSearchQuery = (query) => {
     console.log(query);
@@ -56,13 +58,15 @@ const App = () => {
 
   return (
     <MainDiv>
-      <Search requestSearchQuery={(query) => requestSearchQuery(query)} />
-      {searchQuery === "" ? null : (
-        <SearchQuery>You searched: "{searchQuery}".</SearchQuery>
-      )}
-
-      {isLoading === true || feed.length > 0 ? null : (
-        <SearchQuery>Sorry, nothing found.</SearchQuery>
+      <Search
+        perPage={itemsPerPage}
+        changeItemsPerPage={(amount) => setItemsPerPage(amount)}
+        requestSearchQuery={(query) => requestSearchQuery(query)}
+      />
+      {searchQuery === "" || isLoading ? null : (
+        <SearchQuery>
+          You searched: "{searchQuery}". Found {numResults} results.
+        </SearchQuery>
       )}
 
       <ResponsiveMasonry
@@ -79,8 +83,16 @@ const App = () => {
                   name={feedItem.display.displayName}
                   image={feedItem.display.images[0]}
                   time={feedItem.content.details.totalTime}
+                  description={
+                    feedItem.content.description?.text
+                      ? feedItem.content.description.text
+                      : null
+                  }
                   ingredients={feedItem.content.ingredientLines}
+                  numberOfServings={feedItem.content.details.numberOfServings}
                   sourceURL={feedItem.display.source.sourceRecipeUrl}
+                  rating={feedItem.content.details.rating}
+                  tags={feedItem.content.tags}
                 />
               );
             })
