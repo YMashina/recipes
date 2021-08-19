@@ -10,6 +10,7 @@ import { generateHexString, changeSourceUrl } from "./constants";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import SearchQuery from "../styled/searchQuery";
 import Pagination from "../Pagination/Pagination";
+import ErrorMessage from "../Error/ErrorMessage";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,6 +20,11 @@ const App = () => {
   const [totalResults, setTotalResults] = useState(0);
   const [numResults, setNumResults] = useState(0);
   const [startFeed, setStartFeed] = useState(0);
+  const [error, setError] = useState({
+    isError: false,
+    message: "",
+    status: 200,
+  });
 
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -46,10 +52,17 @@ const App = () => {
         setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
         setTotalResults(response.data.totalMatchCount);
+        setError({ isError: false });
         setIsLoading(false);
       })
       .catch(function (error) {
-        console.error(error);
+        console.error("error");
+        console.error(error.response.status);
+        setError({
+          isError: true,
+          message: error.message,
+          status: error.response.status,
+        });
       });
   }, [searchQuery, itemsPerPage, startFeed]);
 
@@ -60,11 +73,8 @@ const App = () => {
   }, [getRecipes, searchQuery, itemsPerPage, startFeed]);
 
   const requestSearchQuery = (query) => {
-    console.log(query);
     setSearchQuery(query);
   };
-
-  console.log("startFeed" + startFeed);
 
   const getPage = (page) => {
     setStartFeed(startFeed + (page - 1) * itemsPerPage + 1);
@@ -83,7 +93,12 @@ const App = () => {
           You searched: "{searchQuery}". Found {numResults} results.
         </SearchQuery>
       )}
-      {isLoading ? null : (
+
+      {error.isError ? (
+        <ErrorMessage message={error.message} status={error.status} />
+      ) : null}
+
+      {isLoading || !error.isError ? null : (
         <Pagination
           totalResults={totalResults}
           itemsPerPage={itemsPerPage}
@@ -98,7 +113,7 @@ const App = () => {
         columnsCountBreakPoints={{ 300: 1, 600: 2, 900: 3, 1200: 4, 1500: 5 }}
       >
         <Masonry>
-          {isLoading ? (
+          {isLoading && !error.isError ? (
             <Spinner />
           ) : (
             feed.map((feedItem) => {
