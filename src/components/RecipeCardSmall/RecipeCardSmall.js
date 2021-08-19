@@ -26,6 +26,7 @@ import {
   faStarHalf,
 } from "@fortawesome/free-regular-svg-icons";
 import RatingValue from "../styled/RatingValue";
+import StarsDiv from "../styled/StarsDiv";
 
 const RecipeCardSmall = ({
   name,
@@ -38,6 +39,9 @@ const RecipeCardSmall = ({
   rating,
   tags,
 }) => {
+  const roundReviewValue = (num) => {
+    return Math.round((num + Number.EPSILON) * 100) / 100;
+  };
   const makeTagsArray = () => {
     const courseTags = tags.course
       ? tags.course.map((tag) => {
@@ -53,6 +57,7 @@ const RecipeCardSmall = ({
     return [...courseTags, ...dishTags, ...techniqueTags];
   };
   const tagsDisplayArray = useMemo(() => makeTagsArray(), [tags]);
+
   return (
     <CardsDiv>
       <Card style={{ maxWidth: "20rem" }}>
@@ -69,20 +74,24 @@ const RecipeCardSmall = ({
               <IconBlock> {numberOfServings}</IconBlock>
             </IconBlock>
             <IconBlock>
-              <ReactStars
-                value={rating}
-                edit={false}
-                size={24}
-                isHalf={true}
-                emptyIcon={<FontAwesomeIcon icon={farStar} />}
-                halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
-                fullIcon={<FontAwesomeIcon icon={faStar} />}
-                activeColor="#ffd700"
-              />
-              <RatingValue>{rating}</RatingValue>
-            </IconBlock>
-          </div>
+              <StarsDiv>
+                <ReactStars
+                  value={rating.value}
+                  edit={false}
+                  size={24}
+                  isHalf={true}
+                  emptyIcon={<FontAwesomeIcon icon={farStar} />}
+                  halfIcon={<FontAwesomeIcon icon={faStarHalf} />}
+                  fullIcon={<FontAwesomeIcon icon={faStar} />}
+                  activeColor="#ffd700"
+                />
+              </StarsDiv>
 
+              <RatingValue>{roundReviewValue(rating.value)}</RatingValue>
+            </IconBlock>
+            {roundReviewValue(rating.totalReviewCount)} votes
+          </div>
+          <br />
           <CardText>
             Tags:{" "}
             {tagsDisplayArray.map(

@@ -6,23 +6,29 @@ import MainDiv from "../styled/MainDiv";
 import Spinner from "../styled/Spinner";
 import RecipeCardSmall from "../RecipeCardSmall/RecipeCardSmall";
 import Search from "../Search/Search";
-import { generateHexString } from "./constants";
+import { generateHexString, changeSourceUrl } from "./constants";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import SearchQuery from "../styled/searchQuery";
+import Pagination from "../Pagination/Pagination";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [feed, setFeed] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [totalResults, setTotalResults] = useState(0);
   const [numResults, setNumResults] = useState(0);
+  const [startFeed, setStartFeed] = useState(0);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
   const getRecipes = useCallback(async () => {
     const options = {
       method: "GET",
       url: "https://yummly2.p.rapidapi.com/feeds/search",
       params: {
         maxResult: itemsPerPage.toString(),
-        start: "18",
+        start: startFeed.toString(),
         FAT_KCALMax: "1000",
         q: searchQuery,
         maxTotalTimeInSeconds: "7200",
@@ -39,21 +45,30 @@ const App = () => {
         console.log(response.data);
         setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
+        setTotalResults(response.data.totalMatchCount);
         setIsLoading(false);
       })
       .catch(function (error) {
         console.error(error);
       });
-  }, [searchQuery, itemsPerPage]);
+  }, [searchQuery, itemsPerPage, startFeed]);
 
   useEffect(() => {
     setIsLoading(true);
+
     getRecipes();
-  }, [getRecipes, searchQuery, itemsPerPage]);
+  }, [getRecipes, searchQuery, itemsPerPage, startFeed]);
 
   const requestSearchQuery = (query) => {
     console.log(query);
     setSearchQuery(query);
+  };
+
+  console.log("startFeed" + startFeed);
+
+  const getPage = (page) => {
+    setStartFeed(startFeed + (page - 1) * itemsPerPage + 1);
+    setCurrentPage(page);
   };
 
   return (
@@ -67,6 +82,16 @@ const App = () => {
         <SearchQuery>
           You searched: "{searchQuery}". Found {numResults} results.
         </SearchQuery>
+      )}
+      {isLoading ? null : (
+        <Pagination
+          totalResults={totalResults}
+          itemsPerPage={itemsPerPage}
+          getPage={(page) => {
+            getPage(page);
+          }}
+          currentPage={currentPage}
+        />
       )}
 
       <ResponsiveMasonry
@@ -90,8 +115,13 @@ const App = () => {
                   }
                   ingredients={feedItem.content.ingredientLines}
                   numberOfServings={feedItem.content.details.numberOfServings}
-                  sourceURL={feedItem.display.source.sourceRecipeUrl}
-                  rating={feedItem.content.details.rating}
+                  sourceURL={changeSourceUrl(
+                    feedItem.display.source.sourceRecipeUrl
+                  )}
+                  rating={{
+                    value: feedItem.content.reviews.averageRating,
+                    totalReviewCount: feedItem.content.reviews.totalReviewCount,
+                  }}
                   tags={feedItem.content.tags}
                 />
               );
