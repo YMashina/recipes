@@ -16,7 +16,7 @@ import CardsImg from "../styled/CardsImg";
 import CardsDiv from "../styled/CardsDiv";
 import Icon from "../styled/Icon";
 import IconBlock from "../styled/IconBlock";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import RatingStarIcon from "../styled/RatingStarIcon";
 import ReactStars from "react-rating-stars-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -27,11 +27,18 @@ import {
 } from "@fortawesome/free-regular-svg-icons";
 import RatingValue from "../styled/RatingValue";
 import StarsDiv from "../styled/StarsDiv";
+import { Link } from "react-router-dom";
+import { roundReviewValue } from "./constants";
+import NewWindow from "react-new-window";
+import RecipePage from "../RecipePage/RecipePage";
 
 const RecipeCardSmall = ({
+  id,
   name,
   image,
   time,
+  video,
+  preparationSteps,
   ingredients,
   sourceURL,
   description,
@@ -39,9 +46,7 @@ const RecipeCardSmall = ({
   rating,
   tags,
 }) => {
-  const roundReviewValue = (num) => {
-    return Math.round((num + Number.EPSILON) * 100) / 100;
-  };
+  const [renderNewWindow, setRenderNewWindow] = useState(false);
   const makeTagsArray = () => {
     const courseTags = tags.course
       ? tags.course.map((tag) => {
@@ -57,6 +62,10 @@ const RecipeCardSmall = ({
     return [...courseTags, ...dishTags, ...techniqueTags];
   };
   const tagsDisplayArray = useMemo(() => makeTagsArray(), [tags]);
+
+  const clickOnRecipePage = () => {
+    console.log("hehehehehehe!!!!!");
+  };
 
   return (
     <CardsDiv>
@@ -99,16 +108,25 @@ const RecipeCardSmall = ({
                 tagItem + (index !== tagsDisplayArray.length - 1 ? ", " : "")
             )}
           </CardText>
-
-          <Button
-            onClick={() => {
-              window.open(sourceURL, "_blank");
-            }}
-          >
+          <Button onClick={() => setRenderNewWindow(true)}>
             Read more &rarr;
           </Button>
         </CardBody>
       </Card>
+      {renderNewWindow ? (
+        <NewWindow>
+          <RecipePage
+            clickOnRecipePage={clickOnRecipePage}
+            name={name}
+            image={image}
+            description={description}
+            rating={rating}
+            video={video}
+            preparationSteps={preparationSteps}
+            ingredients={ingredients}
+          />
+        </NewWindow>
+      ) : null}
     </CardsDiv>
   );
 };

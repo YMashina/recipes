@@ -13,3 +13,13 @@ export const changeSourceUrl = (url) => {
   }
   return urlCopy;
 };
+
+export const firstHeaders = {
+  "x-rapidapi-key": "6e78af7e27mshf423b9eb8beec5ep14aa77jsnb5aca16d5d78",
+  "x-rapidapi-host": "yummly2.p.rapidapi.com",
+};
+
+export const secondHeaders = {
+  "x-rapidapi-host": "yummly2.p.rapidapi.com",
+  "x-rapidapi-key": "1ed88af795msh37c44ee05ac42a2p18ca0fjsn217703022460",
+};

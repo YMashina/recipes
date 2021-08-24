@@ -1,17 +1,20 @@
 import {
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle,
   FormInput,
   InputGroup,
   InputGroupAddon,
+  InputGroupText,
+  Nav,
+  Navbar,
+  NavbarBrand,
+  NavItem,
+  NavLink,
 } from "shards-react";
-import SearchMargin from "../styled/SearchMargin";
 import { useState } from "react";
-import SearchQuery from "../styled/searchQuery";
-import ItemsPerPage from "../styled/ItemsPerPage";
+import NavbarWidth from "../styled/NavbarWidth";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import SearchGoButtonIcon from "../styled/SearchGoButtonIcon";
 
 const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -31,47 +34,45 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   };
 
   return (
-    <SearchMargin>
-      <InputGroup>
-        <Dropdown
-          addonType="prepend"
-          open={isDropdownOpen}
-          toggle={toggleDropdown}
-        >
-          <DropdownToggle outline theme="secondary">
-            {perPage} &#9660;
-          </DropdownToggle>
-          <DropdownMenu>
-            <DropdownItem onClick={() => changeItemsPerPage(5)}>
-              5 per page
-            </DropdownItem>
-            <DropdownItem onClick={() => changeItemsPerPage(10)}>
-              10 per page
-            </DropdownItem>
-            <DropdownItem onClick={() => changeItemsPerPage(15)}>
-              15 per page
-            </DropdownItem>
-            <DropdownItem onClick={() => changeItemsPerPage(18)}>
-              18 per page
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <FormInput
-          placeholder="Search recipes..."
-          value={searchQuery}
-          onKeyPress={handleKeypress}
-          onChange={handleChange}
-        />
-        <InputGroupAddon type="append">
-          <Button
-            theme="secondary"
-            onClick={() => requestSearchQuery(searchQuery)}
-          >
-            Search
-          </Button>
-        </InputGroupAddon>
-      </InputGroup>
-    </SearchMargin>
+    <Navbar type="light" theme="none" expand="md">
+      <NavbarBrand href="/">Yummly recipes</NavbarBrand>
+      <Nav navbar>
+        <NavItem>
+          <NavLink active href="/my-recipes">
+            My recipes
+          </NavLink>
+        </NavItem>
+      </Nav>
+
+      <Nav navbar className="ml-auto">
+        <NavbarWidth>
+          <InputGroup seamless>
+            <InputGroupAddon type="prepend">
+              <InputGroupText>
+                <FontAwesomeIcon icon={faSearch} />
+              </InputGroupText>
+            </InputGroupAddon>
+            <FormInput
+              className="border-0"
+              placeholder="Search recipes..."
+              value={searchQuery}
+              onKeyPress={handleKeypress}
+              onChange={handleChange}
+            />
+            <InputGroupAddon type="append">
+              <Button
+                className="border-0"
+                theme="light"
+                outline
+                onClick={() => requestSearchQuery(searchQuery)}
+              >
+                <SearchGoButtonIcon>&#5171;</SearchGoButtonIcon>
+              </Button>
+            </InputGroupAddon>
+          </InputGroup>
+        </NavbarWidth>
+      </Nav>
+    </Navbar>
   );
 };
 
