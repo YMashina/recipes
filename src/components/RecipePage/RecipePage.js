@@ -8,6 +8,7 @@ import IngredientTable from "../styled/IngredientTable";
 import RecipePageDiv from "../styled/RecipePageDiv";
 import { generateHexString } from "../App/constants";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
+import Scroll from "../styled/Scroll";
 
 const RecipePage = ({
   clickOnRecipePage,
@@ -22,11 +23,9 @@ const RecipePage = ({
   numberOfServings,
 }) => {
   const { id } = useParams();
-  console.log(ingredients);
-  console.log(preparationSteps);
   return (
     <ModalBody>
-      <RecipePageDiv>
+      <Scroll>
         <RecipePageImgRounded src={image} />
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
@@ -78,7 +77,14 @@ const RecipePage = ({
         >
           Add to my recipes
         </Button>
-      </RecipePageDiv>
+        <video
+          src={video}
+          width="600"
+          height="300"
+          controls="controls"
+          autoPlay="true"
+        />
+      </Scroll>
     </ModalBody>
   );
 };

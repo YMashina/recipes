@@ -8,14 +8,12 @@ import {
   Button,
   CardText,
   Modal,
-  ModalBody,
-  ModalHeader,
 } from "shards-react";
 import CardsDiv from "../styled/CardsDiv";
 import { useMemo, useState } from "react";
-import NewWindow from "react-new-window";
 import RecipePage from "../RecipePage/RecipePage";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
+import ModalDiv from "../styled/ModalDiv";
 
 const RecipeCardSmall = ({
   id,
@@ -30,11 +28,12 @@ const RecipeCardSmall = ({
   numberOfServings,
   rating,
   tags,
+  toggleScroll,
 }) => {
-  const [renderNewWindow, setRenderNewWindow] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {
     setIsModalOpen(!isModalOpen);
+    toggleScroll(isModalOpen);
   };
   const makeTagsArray = () => {
     const courseTags = tags.course
@@ -58,7 +57,7 @@ const RecipeCardSmall = ({
 
   return (
     <CardsDiv>
-      <Card style={{ maxWidth: "20rem" }}>
+      <Card onClick={toggleModal} style={{ maxWidth: "20rem" }}>
         <CardImg top src={image} />
         <CardBody>
           <CardTitle>{name}</CardTitle>
@@ -80,22 +79,8 @@ const RecipeCardSmall = ({
           </Button>
         </CardBody>
       </Card>
-      <Modal open={isModalOpen} toggle={toggleModal} size={"lg"}>
-        <RecipePage
-          clickOnRecipePage={clickOnRecipePage}
-          name={name}
-          image={image}
-          description={description}
-          rating={rating}
-          video={video}
-          preparationSteps={preparationSteps}
-          ingredients={ingredients}
-          time={time}
-          numberOfServings={numberOfServings}
-        />
-      </Modal>
-      {renderNewWindow ? (
-        <NewWindow>
+      <ModalDiv>
+        <Modal open={isModalOpen} toggle={toggleModal} size={"lg"}>
           <RecipePage
             clickOnRecipePage={clickOnRecipePage}
             name={name}
@@ -108,8 +93,8 @@ const RecipeCardSmall = ({
             time={time}
             numberOfServings={numberOfServings}
           />
-        </NewWindow>
-      ) : null}
+        </Modal>
+      </ModalDiv>
     </CardsDiv>
   );
 };

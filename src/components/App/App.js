@@ -19,32 +19,12 @@ import ErrorMessage from "../Error/ErrorMessage";
 import { Button } from "shards-react";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import RecipePage from "../RecipePage/RecipePage";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Navbar,
-  NavbarToggler,
-  NavbarBrand,
-  Nav,
-  NavItem,
-  NavLink,
-  Dropdown,
-  DropdownToggle,
-  DropdownMenu,
-  DropdownItem,
-  InputGroup,
-  InputGroupAddon,
-  InputGroupText,
-  FormInput,
-  Collapse,
-} from "shards-react";
-import NavbarWidth from "../styled/NavbarWidth";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [feed, setFeed] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [itemsPerPage, setItemsPerPage] = useState(15);
   const [totalResults, setTotalResults] = useState(0);
   const [numResults, setNumResults] = useState(0);
   const [startFeed, setStartFeed] = useState(0);
@@ -54,6 +34,12 @@ const App = () => {
     message: "",
     status: 200,
   });
+
+  const toggleScroll = (bool) => {
+    bool
+      ? (document.body.style.overflow = "visible")
+      : (document.body.style.overflow = "hidden");
+  };
 
   const getRecipes = useCallback(async () => {
     const options = {
@@ -191,6 +177,7 @@ const App = () => {
                             feedItem.content.reviews.totalReviewCount,
                         }}
                         tags={feedItem.content.tags}
+                        toggleScroll={toggleScroll}
                       />
                     );
                   })
