@@ -51,21 +51,22 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
 
   return (
     <Navbar type="light" theme="none" expand="md">
-      <NavbarBrand
-        href="/"
-        onClick={() => {
-          history.push("/"); //removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
-          //toggleActive(false);
-        }}
-      >
-        Yummly recipes
-      </NavbarBrand>
+      <Link to={"/"}>
+        <NavbarBrand
+          onClick={() => {
+            //history.push("/"); //removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+            //toggleActive(false);
+          }}
+        >
+          Yummly recipes
+        </NavbarBrand>
+      </Link>
 
       <Nav navbar>
         <NavItem onClick={setMyRecipesActive}>
-          <NavLink href={"/my-recipes"} active={myRecipesActive}>
-            My recipes
-          </NavLink>
+          <Link to={"/my-recipes"}>
+            <NavLink active={myRecipesActive}>My recipes</NavLink>
+          </Link>
         </NavItem>
       </Nav>
 
