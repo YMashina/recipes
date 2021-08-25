@@ -42,12 +42,6 @@ const App = () => {
 
   const history = useHistory();
 
-  const toggleScroll = (bool) => {
-    bool
-      ? (document.body.style.overflow = "visible")
-      : (document.body.style.overflow = "hidden");
-  };
-
   const getRecipes = useCallback(async () => {
     const options = {
       method: "GET",
@@ -181,7 +175,6 @@ const App = () => {
                             feedItem.content.reviews.totalReviewCount,
                         }}
                         tags={feedItem.content.tags}
-                        toggleScroll={toggleScroll}
                       />
                     );
                   })

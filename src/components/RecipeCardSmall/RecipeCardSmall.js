@@ -14,6 +14,7 @@ import { useMemo, useState } from "react";
 import RecipePage from "../RecipePage/RecipePage";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
 import ModalDiv from "../styled/ModalDiv";
+import { toggleScroll } from "../constants";
 
 const RecipeCardSmall = ({
   id,
@@ -27,7 +28,6 @@ const RecipeCardSmall = ({
   numberOfServings,
   rating,
   tags,
-  toggleScroll,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const toggleModal = () => {

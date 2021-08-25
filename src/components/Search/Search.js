@@ -10,16 +10,18 @@ import {
   NavItem,
   NavLink,
 } from "shards-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NavbarWidth from "../styled/NavbarWidth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import SearchGoButtonIcon from "../styled/SearchGoButtonIcon";
-import { Link, useHistory, useParams, withRouter } from "react-router-dom";
+import { Link, useHistory, useLocation, withRouter } from "react-router-dom";
 
 const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [myRecipesActive, setMyRecipesActive] = useState(false);
+  const location = useLocation();
+  console.log(location.pathname);
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -40,6 +42,10 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
     }
   };
 
+  useEffect(() => {
+    setMyRecipesActive(location.pathname === "/my-recipes");
+  }, [location.pathname]);
+
   const toggleActive = (bool) => {
     setMyRecipesActive(bool);
   };
@@ -50,7 +56,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
         <NavbarBrand
           onClick={() => {
             //history.push("/"); removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
-            toggleActive(false);
+            //toggleActive(false);
           }}
         >
           Yummly recipes
@@ -58,7 +64,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       </Link>
 
       <Nav navbar>
-        <NavItem onClick={() => toggleActive(true)}>
+        <NavItem onClick={setMyRecipesActive}>
           <Link to={"/my-recipes"}>
             <NavLink active={myRecipesActive}>My recipes</NavLink>
           </Link>
