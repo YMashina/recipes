@@ -30,9 +30,9 @@ const RecipePage = ({
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
           <RecipeQuickData
-            time={time}
-            numberOfServings={numberOfServings}
-            rating={rating}
+            time={time ? time : null}
+            numberOfServings={numberOfServings ? numberOfServings : null}
+            rating={rating ? rating : null}
           />
         </RecipePageDiv>
 
@@ -47,26 +47,32 @@ const RecipePage = ({
           </Button>
         </RecipePageDiv>
 
-        <RecipePageDiv>{description}</RecipePageDiv>
+        <RecipePageDiv>
+          {description ? description : "No description."}
+        </RecipePageDiv>
         <RecipePageDiv>
           <ul>
-            {ingredients.map((ingredient) => (
-              <li key={generateHexString()}>
-                <div>
-                  {ingredient.amount.metric.quantity}{" "}
-                  {ingredient.amount.metric.unit.abbreviation}{" "}
-                  {ingredient.ingredient}
-                </div>
-              </li>
-            ))}
+            {ingredients
+              ? ingredients.map((ingredient) => (
+                  <li key={generateHexString()}>
+                    <div>
+                      {ingredient.amount.metric.quantity}{" "}
+                      {ingredient.amount.metric.unit.abbreviation}{" "}
+                      {ingredient.ingredient}
+                    </div>
+                  </li>
+                ))
+              : "No ingredients data."}
           </ul>
         </RecipePageDiv>
         <RecipePageDiv>
-          {preparationSteps.map((step, index) => (
-            <RecipePageDiv>
-              {index + 1}. {step}
-            </RecipePageDiv>
-          ))}
+          {preparationSteps
+            ? preparationSteps.map((step, index) => (
+                <RecipePageDiv>
+                  {index + 1}. {step}
+                </RecipePageDiv>
+              ))
+            : "No preparation steps data."}
         </RecipePageDiv>
         <RecipePageDiv>
           <Button

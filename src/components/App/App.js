@@ -17,7 +17,12 @@ import SearchQuery from "../styled/searchQuery";
 import Pagination from "../Pagination/Pagination";
 import ErrorMessage from "../Error/ErrorMessage";
 import { Button } from "shards-react";
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+} from "react-router-dom";
 import RecipePage from "../RecipePage/RecipePage";
 
 const App = () => {
@@ -34,6 +39,8 @@ const App = () => {
     message: "",
     status: 200,
   });
+
+  const history = useHistory();
 
   const toggleScroll = (bool) => {
     bool
@@ -91,6 +98,7 @@ const App = () => {
 
   const requestSearchQuery = (query) => {
     setSearchQuery(query);
+    history?.push("/");
   };
 
   const getPage = (page) => {
@@ -101,24 +109,22 @@ const App = () => {
   return (
     <MainDiv>
       <Router>
+        <Search
+          perPage={itemsPerPage}
+          changeItemsPerPage={(amount) => setItemsPerPage(amount)}
+          requestSearchQuery={(query) => requestSearchQuery(query)}
+        />
+
         <Switch>
-          <Route path="/:id" children={<RecipePage />} />
+          {error.isError ? (
+            <ErrorMessage message={error.message} status={error.status} />
+          ) : null}
           <Route exact path="/">
-            <Search
-              perPage={itemsPerPage}
-              changeItemsPerPage={(amount) => setItemsPerPage(amount)}
-              requestSearchQuery={(query) => requestSearchQuery(query)}
-            />
             {searchQuery === "" || isLoading ? null : (
               <SearchQuery>
                 You searched: "{searchQuery}". Found {numResults} results.
               </SearchQuery>
             )}
-
-            {error.isError ? (
-              <ErrorMessage message={error.message} status={error.status} />
-            ) : null}
-
             {isLoading ||
             error.isError ||
             searchQuery === "" ||
@@ -185,6 +191,7 @@ const App = () => {
               </Masonry>
             </ResponsiveMasonry>
           </Route>
+          <Route path={"/my-recipes"}>your recipes</Route>
         </Switch>
       </Router>
     </MainDiv>

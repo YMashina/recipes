@@ -15,32 +15,34 @@ import NavbarWidth from "../styled/NavbarWidth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import SearchGoButtonIcon from "../styled/SearchGoButtonIcon";
+import { Link, useHistory, withRouter } from "react-router-dom";
 
 const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  const toggleDropdown = () => {
-    setIsDropdownOpen(!isDropdownOpen);
-  };
+  const history = useHistory();
 
   const handleKeypress = (e) => {
     if (e.charCode === 13) {
       requestSearchQuery(searchQuery);
+      history.push("/");
     }
   };
 
   return (
     <Navbar type="light" theme="none" expand="md">
-      <NavbarBrand href="/">Yummly recipes</NavbarBrand>
+      <Link to={"/"}>
+        <NavbarBrand>Yummly recipes</NavbarBrand>
+      </Link>
+
       <Nav navbar>
         <NavItem>
-          <NavLink active href="/my-recipes">
-            My recipes
-          </NavLink>
+          <Link to={"/my-recipes"}>
+            <NavLink active>My recipes</NavLink>
+          </Link>
         </NavItem>
       </Nav>
 
@@ -52,6 +54,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
                 <FontAwesomeIcon icon={faSearch} />
               </InputGroupText>
             </InputGroupAddon>
+
             <FormInput
               className="border-0"
               placeholder="Search recipes..."
@@ -59,6 +62,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
               onKeyPress={handleKeypress}
               onChange={handleChange}
             />
+
             <InputGroupAddon type="append">
               <Button
                 className="border-0"
@@ -76,4 +80,4 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   );
 };
 
-export default Search;
+export default withRouter(Search);
