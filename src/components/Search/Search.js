@@ -21,7 +21,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [myRecipesActive, setMyRecipesActive] = useState(false);
   const location = useLocation();
-  console.log(location.pathname);
   const handleChange = (event) => {
     setSearchQuery(event.target.value);
   };
@@ -52,22 +51,21 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
 
   return (
     <Navbar type="light" theme="none" expand="md">
-      <Link to={"/"}>
-        <NavbarBrand
-          onClick={() => {
-            //history.push("/"); removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
-            //toggleActive(false);
-          }}
-        >
-          Yummly recipes
-        </NavbarBrand>
-      </Link>
+      <NavbarBrand
+        href="/"
+        onClick={() => {
+          history.push("/"); //removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+          //toggleActive(false);
+        }}
+      >
+        Yummly recipes
+      </NavbarBrand>
 
       <Nav navbar>
         <NavItem onClick={setMyRecipesActive}>
-          <Link to={"/my-recipes"}>
-            <NavLink active={myRecipesActive}>My recipes</NavLink>
-          </Link>
+          <NavLink href={"/my-recipes"} active={myRecipesActive}>
+            My recipes
+          </NavLink>
         </NavItem>
       </Nav>
 

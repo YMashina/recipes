@@ -3,7 +3,6 @@ import { useCallback, useMemo, useState } from "react";
 import { calculateMaxPage } from "./constants";
 
 const Pagination = ({ totalResults, itemsPerPage, getPage, currentPage }) => {
-  console.log("currentPage: " + currentPage);
   const maxPage = useMemo(
     () => calculateMaxPage(totalResults, itemsPerPage),
     [totalResults, itemsPerPage]

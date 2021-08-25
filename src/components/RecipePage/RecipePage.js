@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Button, ModalBody } from "shards-react";
 import RecipeHeading from "../styled/RecipeHeading";
 import RecipePageStyleDiv from "../styled/RecipePageStyleDiv";
@@ -10,6 +10,7 @@ import { generateHexString } from "../App/constants";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
 import Scroll from "../styled/Scroll";
 import { useState } from "react";
+import RecipeActionButton from "../RecipeActionButton/RecipeActionButton";
 
 const RecipePage = ({
   id,
@@ -22,10 +23,11 @@ const RecipePage = ({
   rating,
   time,
   numberOfServings,
-  toggleScroll,
   tags,
 }) => {
   const [isError, setIsError] = useState(false);
+  const [update, setUpdate] = useState(false);
+  const location = useLocation();
 
   const clickAddRecipe = () => {
     localStorage.setItem(
@@ -40,15 +42,22 @@ const RecipePage = ({
         rating,
         time,
         numberOfServings,
-        toggleScroll,
         tags,
       })
     );
+    setUpdate(!update);
+  };
+
+  const clickRemoveRecipe = (id) => {
+    localStorage.removeItem(id);
+    if (location.pathname === "/my-recipes") window.location.reload();
+
+    setUpdate(!update);
   };
 
   return (
     <ModalBody>
-      <Scroll>
+      <Scroll update={update}>
         <RecipePageImgRounded src={image} />
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
@@ -59,16 +68,11 @@ const RecipePage = ({
           />
         </RecipePageDiv>
 
-        <RecipePageDiv>
-          <Button
-            outline
-            onClick={() => {
-              clickAddRecipe();
-            }}
-          >
-            Add to my recipes
-          </Button>
-        </RecipePageDiv>
+        <RecipeActionButton
+          id={id}
+          clickAddRecipe={clickAddRecipe}
+          clickRemoveRecipe={() => clickRemoveRecipe(id)}
+        />
 
         <RecipePageDiv>
           {description ? description : "No description."}
@@ -97,16 +101,13 @@ const RecipePage = ({
               ))
             : "No preparation steps data."}
         </RecipePageDiv>
-        <RecipePageDiv>
-          <Button
-            outline
-            onClick={() => {
-              clickAddRecipe();
-            }}
-          >
-            Add to my recipes
-          </Button>
-        </RecipePageDiv>
+
+        <RecipeActionButton
+          id={id}
+          clickAddRecipe={clickAddRecipe}
+          clickRemoveRecipe={() => clickRemoveRecipe(id)}
+        />
+
         {video.originalVideoUrl && !isError ? (
           <RecipePageDiv>
             <video width="100%" controls>

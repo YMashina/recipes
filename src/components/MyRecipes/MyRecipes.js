@@ -35,6 +35,8 @@ const MyRecipes = () => {
                   } = JSON.parse(localStorage.getItem(key));
                   return (
                     <RecipeCardSmall
+                      key={key}
+                      id={key}
                       name={name}
                       image={image}
                       description={description}
@@ -49,10 +51,13 @@ const MyRecipes = () => {
                   );
                 } catch (e) {
                   setIsError(true);
+                  return null;
                 }
-                console.log(localStorage.getItem(key));
               })
             : null}
+          {localStorage.length !== 0 ? null : (
+            <div>No recipes found. Try adding one!</div>
+          )}
         </Masonry>
       </ResponsiveMasonry>
     </>

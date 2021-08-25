@@ -87,7 +87,6 @@ const RecipeCardSmall = ({
             ingredients={ingredients}
             time={time}
             numberOfServings={numberOfServings}
-            toggleScroll={toggleScroll}
             tags={tags}
           />
         </Modal>
