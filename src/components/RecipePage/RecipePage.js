@@ -57,7 +57,7 @@ const RecipePage = ({
 
   return (
     <ModalBody>
-      <Scroll update={update}>
+      <Scroll>
         <RecipePageImgRounded src={image} />
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
@@ -69,6 +69,7 @@ const RecipePage = ({
         </RecipePageDiv>
 
         <RecipeActionButton
+          update={update}
           id={id}
           clickAddRecipe={clickAddRecipe}
           clickRemoveRecipe={() => clickRemoveRecipe(id)}
@@ -103,6 +104,7 @@ const RecipePage = ({
         </RecipePageDiv>
 
         <RecipeActionButton
+          update={update}
           id={id}
           clickAddRecipe={clickAddRecipe}
           clickRemoveRecipe={() => clickRemoveRecipe(id)}

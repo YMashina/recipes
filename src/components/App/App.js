@@ -58,7 +58,7 @@ const App = () => {
           : {
               maxResult: itemsPerPage.toString(),
               start: startFeed.toString(),
-              q: searchQuery,
+              q: searchQuery.replace(/ /g, "%20"),
             },
       headers: secondHeaders,
     };
