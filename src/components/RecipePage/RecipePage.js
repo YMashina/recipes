@@ -68,22 +68,24 @@ const RecipePage = ({
             </RecipePageDiv>
           ))}
         </RecipePageDiv>
-
-        <Button
-          outline
-          onClick={() => {
-            clickOnRecipePage();
-          }}
-        >
-          Add to my recipes
-        </Button>
-        <video
-          src={video}
-          width="600"
-          height="300"
-          controls="controls"
-          autoPlay="true"
-        />
+        <RecipePageDiv>
+          <Button
+            outline
+            onClick={() => {
+              clickOnRecipePage();
+            }}
+          >
+            Add to my recipes
+          </Button>
+        </RecipePageDiv>
+        {video.originalVideoUrl ? (
+          <RecipePageDiv>
+            <video width="100%" controls>
+              <source src={video.originalVideoUrl} type="video/mp4" />
+              Your browser does not support HTML video.
+            </video>
+          </RecipePageDiv>
+        ) : null}
       </Scroll>
     </ModalBody>
   );
