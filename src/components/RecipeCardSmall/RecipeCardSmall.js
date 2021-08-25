@@ -23,7 +23,6 @@ const RecipeCardSmall = ({
   video,
   preparationSteps,
   ingredients,
-  sourceURL,
   description,
   numberOfServings,
   rating,
@@ -50,10 +49,6 @@ const RecipeCardSmall = ({
     return [...courseTags, ...dishTags, ...techniqueTags];
   };
   const tagsDisplayArray = useMemo(() => makeTagsArray(), [tags]);
-
-  const clickOnRecipePage = () => {
-    console.log("hehehehehehe!!!!!");
-  };
 
   return (
     <CardsDiv>
@@ -82,7 +77,7 @@ const RecipeCardSmall = ({
       <ModalDiv>
         <Modal open={isModalOpen} toggle={toggleModal} size={"lg"}>
           <RecipePage
-            clickOnRecipePage={clickOnRecipePage}
+            id={id}
             name={name}
             image={image}
             description={description}
@@ -92,6 +87,8 @@ const RecipeCardSmall = ({
             ingredients={ingredients}
             time={time}
             numberOfServings={numberOfServings}
+            toggleScroll={toggleScroll}
+            tags={tags}
           />
         </Modal>
       </ModalDiv>

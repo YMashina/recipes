@@ -23,7 +23,7 @@ import {
   Route,
   useHistory,
 } from "react-router-dom";
-import RecipePage from "../RecipePage/RecipePage";
+import MyRecipes from "../MyRecipes/MyRecipes";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -72,8 +72,6 @@ const App = () => {
     axios
       .request(options)
       .then(function (response) {
-        console.log(response.data);
-        console.log(options.params);
         setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
         setTotalResults(response.data.totalMatchCount);
@@ -191,7 +189,9 @@ const App = () => {
               </Masonry>
             </ResponsiveMasonry>
           </Route>
-          <Route path={"/my-recipes"}>your recipes</Route>
+          <Route path={"/my-recipes"}>
+            <MyRecipes />
+          </Route>
         </Switch>
       </Router>
     </MainDiv>

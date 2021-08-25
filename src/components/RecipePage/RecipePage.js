@@ -9,9 +9,10 @@ import RecipePageDiv from "../styled/RecipePageDiv";
 import { generateHexString } from "../App/constants";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
 import Scroll from "../styled/Scroll";
+import { useState } from "react";
 
 const RecipePage = ({
-  clickOnRecipePage,
+  id,
   name,
   image,
   description,
@@ -21,8 +22,30 @@ const RecipePage = ({
   rating,
   time,
   numberOfServings,
+  toggleScroll,
+  tags,
 }) => {
-  const { id } = useParams();
+  const [isError, setIsError] = useState(false);
+
+  const clickAddRecipe = () => {
+    localStorage.setItem(
+      id,
+      JSON.stringify({
+        name,
+        image,
+        description,
+        ingredients,
+        preparationSteps,
+        video,
+        rating,
+        time,
+        numberOfServings,
+        toggleScroll,
+        tags,
+      })
+    );
+  };
+
   return (
     <ModalBody>
       <Scroll>
@@ -40,7 +63,7 @@ const RecipePage = ({
           <Button
             outline
             onClick={() => {
-              clickOnRecipePage();
+              clickAddRecipe();
             }}
           >
             Add to my recipes
@@ -78,20 +101,31 @@ const RecipePage = ({
           <Button
             outline
             onClick={() => {
-              clickOnRecipePage();
+              clickAddRecipe();
             }}
           >
             Add to my recipes
           </Button>
         </RecipePageDiv>
-        {video.originalVideoUrl ? (
+        {video.originalVideoUrl && !isError ? (
           <RecipePageDiv>
             <video width="100%" controls>
-              <source src={video.originalVideoUrl} type="video/mp4" />
+              <source
+                src={video.originalVideoUrl}
+                type="video/mp4"
+                onError={() => {
+                  console.log(
+                    "Sorry, the video is currently unavailable: " +
+                      video.originalVideoUrl
+                  );
+                  setIsError(true);
+                }}
+              />
               Your browser does not support HTML video.
             </video>
           </RecipePageDiv>
         ) : null}
+        {isError ? <div>Sorry, the video is currently unavailable.</div> : null}
       </Scroll>
     </ModalBody>
   );
