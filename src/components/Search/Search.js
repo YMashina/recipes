@@ -36,7 +36,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   };
 
   const history = useHistory();
-
+  const [showHintData, setShowHintData] = useState(false);
   const [hintData, setHintData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -119,6 +119,8 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
                 value={searchQuery}
                 onKeyPress={handleKeypress}
                 onChange={handleChange}
+                onClick={() => setShowHintData(true)}
+                onBlur={() => setShowHintData(false)}
               />
 
               <InputGroupAddon type="append">
@@ -135,7 +137,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
           </NavbarWidth>
         </Nav>
       </Navbar>
-      {isLoading ? null : (
+      {isLoading || !showHintData ? null : (
         <SuggestionsList>
           <ListGroup small>
             {hintData.map((hint) => (
