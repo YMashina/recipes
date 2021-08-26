@@ -52,7 +52,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       .request(options)
       .then(function (response) {
         setHintData(response.data.searches);
-        setIsLoading(false);
       })
       .catch(function (error) {
         console.error(error);
@@ -62,7 +61,9 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   useEffect(() => {
     setIsLoading(true);
 
-    getHintData();
+    getHintData().then(() => {
+      setIsLoading(false);
+    });
   }, [searchQuery]);
 
   const searchClick = (searchQuery) => {
@@ -76,12 +77,20 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       requestSearchQuery(searchQuery);
       history.push("/");
       setMyRecipesActive(false);
+      setShowHintData(false);
     }
   };
 
   useEffect(() => {
     setMyRecipesActive(location.pathname === "/my-recipes");
   }, [location.pathname]);
+
+  const checkOnBlur = (event) => {
+    if (event.relatedTarget?.id === "searchSuggestion") {
+      return;
+    }
+    setShowHintData(false);
+  };
 
   return (
     <>
@@ -120,7 +129,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
                 onKeyPress={handleKeypress}
                 onChange={handleChange}
                 onClick={() => setShowHintData(true)}
-                onBlur={() => setShowHintData(false)}
+                onBlur={(e) => checkOnBlur(e)}
               />
 
               <InputGroupAddon type="append">
@@ -140,8 +149,16 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       {isLoading || !showHintData ? null : (
         <SuggestionsList>
           <ListGroup small>
-            {hintData.map((hint) => (
-              <ListGroupItem action key={generateHexString(4)}>
+            {hintData.map((hint, index) => (
+              <ListGroupItem
+                id="searchSuggestion"
+                action
+                key={generateHexString(4)}
+                onClick={() => {
+                  setSearchQuery(hint);
+                  setShowHintData(false);
+                }}
+              >
                 {hint}
               </ListGroupItem>
             ))}

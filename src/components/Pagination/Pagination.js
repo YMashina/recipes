@@ -1,6 +1,7 @@
 import { Button, ButtonGroup } from "shards-react";
 import { useCallback, useMemo, useState } from "react";
 import { calculateMaxPage } from "./constants";
+import { isNaN } from "mathjs";
 
 const Pagination = ({ totalResults, itemsPerPage, getPage, currentPage }) => {
   const maxPage = useMemo(
@@ -101,8 +102,8 @@ const Pagination = ({ totalResults, itemsPerPage, getPage, currentPage }) => {
             {maxPage}
           </Button>
         );
-
-      return buttons.map((button) => button);
+      const result = buttons.map((button) => button);
+      return isNaN(result) ? null : result;
     },
     [currentPage, maxPage]
   );
