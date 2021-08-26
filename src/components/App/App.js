@@ -41,7 +41,6 @@ const App = () => {
   });
 
   const history = useHistory();
-  console.log(searchQuery);
 
   const getRecipes = useCallback(async () => {
     const options = {
