@@ -11,6 +11,7 @@ import {
   changeSourceUrl,
   firstHeaders,
   secondHeaders,
+  thirdHeaders,
 } from "./constants";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import SearchQuery from "../styled/searchQuery";
@@ -60,7 +61,7 @@ const App = () => {
               start: startFeed.toString(),
               q: searchQuery.replace(/ /g, "%20"),
             },
-      headers: secondHeaders,
+      headers: thirdHeaders,
     };
 
     axios

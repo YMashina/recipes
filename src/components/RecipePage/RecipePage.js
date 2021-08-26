@@ -1,5 +1,5 @@
 import { useLocation, useParams } from "react-router-dom";
-import { Button, ModalBody } from "shards-react";
+import { Alert, Button, ModalBody } from "shards-react";
 import RecipeHeading from "../styled/RecipeHeading";
 import RecipePageStyleDiv from "../styled/RecipePageStyleDiv";
 import RecipePageImgRounded from "../styled/RecipePageImgRounded";
@@ -28,36 +28,89 @@ const RecipePage = ({
   const [isError, setIsError] = useState(false);
   const [update, setUpdate] = useState(false);
   const location = useLocation();
+  const [showAlert, setShowAlert] = useState({
+    visible: false,
+    alertText: "",
+    alertTheme: "",
+  });
 
   const clickAddRecipe = () => {
-    localStorage.setItem(
-      id,
-      JSON.stringify({
-        name,
-        image,
-        description,
-        ingredients,
-        preparationSteps,
-        video,
-        rating,
-        time,
-        numberOfServings,
-        tags,
-      })
-    );
-    setUpdate(!update);
+    try {
+      localStorage.setItem(
+        id,
+        JSON.stringify({
+          name,
+          image,
+          description,
+          ingredients,
+          preparationSteps,
+          video,
+          rating,
+          time,
+          numberOfServings,
+          tags,
+        })
+      );
+      setUpdate(!update);
+      setShowAlert({
+        visible: true,
+        alertText: "Recipe added successfully",
+        alertTheme: "success",
+      });
+      showAlertFunction();
+    } catch (e) {
+      setShowAlert({
+        visible: true,
+        alertText: "Something went wrong while adding",
+        alertTheme: "danger",
+      });
+      showAlertFunction();
+    }
   };
 
   const clickRemoveRecipe = (id) => {
-    localStorage.removeItem(id);
-    if (location.pathname === "/my-recipes") window.location.reload();
+    try {
+      localStorage.removeItem(id);
 
-    setUpdate(!update);
+      setUpdate(!update);
+      setShowAlert({
+        visible: true,
+        alertText: "Recipe removed successfully",
+        alertTheme: "success",
+      });
+      showAlertFunction();
+      setTimeout(() => {
+        if (location.pathname === "/my-recipes") window.location.reload();
+      }, 2000);
+    } catch (e) {
+      setShowAlert({
+        visible: true,
+        alertText: "Something went wrong while removing",
+        alertTheme: "danger",
+      });
+      showAlertFunction();
+    }
+  };
+  let interval = null;
+  const showAlertFunction = () => {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      setShowAlert({ visible: false });
+      clearInterval(interval);
+      interval = null;
+    }, 2000);
   };
 
   return (
     <ModalBody>
       <Scroll>
+        <Alert
+          className="mb-3"
+          open={showAlert.visible}
+          theme={showAlert.alertTheme}
+        >
+          {showAlert.alertText}
+        </Alert>
         <RecipePageImgRounded src={image} />
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
