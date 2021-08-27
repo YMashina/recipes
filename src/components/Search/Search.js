@@ -85,8 +85,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
         setSearchQuery(hintData[activeSuggestionIndex]);
     }
     if (e.keyCode === 38) {
-      console.log("keyup");
-
       setActiveSuggestionIndex(
         activeSuggestionIndex <= hintData.length - 1
           ? activeSuggestionIndex - 1
@@ -105,7 +103,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
         setActiveSuggestionIndex(activeSuggestionIndex - 1);
     }
     if (e.keyCode === 40) {
-      console.log("keydown");
       if (activeSuggestionIndex === null) {
         setActiveSuggestionIndex(0);
         return;
@@ -126,14 +123,12 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   }, [location.pathname]);
 
   const checkOnBlur = (event) => {
-    console.log(event);
     if (event.relatedTarget?.id === "searchSuggestion") {
       return;
     }
-    console.log("setting ShowHintData");
     setShowHintData(false);
   };
-  console.log(showHintData);
+
   return (
     <>
       <Navbar type="light" theme="none" expand="md">
@@ -201,7 +196,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
                 theme="light"
                 key={generateHexString(4)}
                 onClick={() => {
-                  console.log("123");
                   setSearchQuery(hint);
                   setShowHintData(false);
                 }}
