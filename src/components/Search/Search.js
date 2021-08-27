@@ -20,6 +20,7 @@ import SearchGoButtonIcon from "../styled/SearchGoButtonIcon";
 import { Link, useHistory, useLocation, withRouter } from "react-router-dom";
 import axios from "axios";
 import {
+  fourthHeaders,
   generateHexString,
   secondHeaders,
   thirdHeaders,
@@ -46,7 +47,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       method: "GET",
       url: "https://yummly2.p.rapidapi.com/feeds/auto-complete",
       params: { q: searchQuery },
-      headers: thirdHeaders,
+      headers: fourthHeaders,
     };
 
     axios
@@ -58,6 +59,8 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
         console.error(error);
       });
   }, [searchQuery]);
+
+  console.log(showHintData);
 
   useEffect(() => {
     setIsLoading(true);
@@ -184,7 +187,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
           </NavbarWidth>
         </Nav>
       </Navbar>
-      {isLoading || showHintData ? null : (
+      {isLoading || !showHintData ? null : (
         <SuggestionsList>
           <ListGroup small>
             {hintData.map((hint, index) => (

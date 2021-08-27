@@ -28,3 +28,8 @@ export const thirdHeaders = {
   "x-rapidapi-host": "yummly2.p.rapidapi.com",
   "x-rapidapi-key": "ca51c09c4dmsh3af18e50dcb2c5fp1d8cdcjsn36a73a5d2c49",
 };
+
+export const fourthHeaders = {
+  "x-rapidapi-host": "yummly2.p.rapidapi.com",
+  "x-rapidapi-key": "6028b0a453msh02771a27c54c866p16788ejsn4d5faddb2004",
+};
