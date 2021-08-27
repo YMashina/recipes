@@ -103,7 +103,7 @@ const Pagination = ({ totalResults, itemsPerPage, getPage, currentPage }) => {
           </Button>
         );
       const result = buttons.map((button) => button);
-      return isNaN(result) ? null : result;
+      return result;
     },
     [currentPage, maxPage]
   );

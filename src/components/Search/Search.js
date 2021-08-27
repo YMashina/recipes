@@ -39,6 +39,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   const [showHintData, setShowHintData] = useState(false);
   const [hintData, setHintData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
 
   const getHintData = useCallback(async () => {
     const options = {
@@ -60,10 +61,12 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
 
   useEffect(() => {
     setIsLoading(true);
-
-    getHintData().then(() => {
-      setIsLoading(false);
-    });
+    if (searchQuery) {
+      getHintData().then(() => {
+        setIsLoading(false);
+      });
+      setActiveSuggestionIndex(null);
+    }
   }, [searchQuery]);
 
   const searchClick = (searchQuery) => {
@@ -78,6 +81,43 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
       history.push("/");
       setMyRecipesActive(false);
       setShowHintData(false);
+      if (activeSuggestionIndex !== null)
+        setSearchQuery(hintData[activeSuggestionIndex]);
+    }
+    if (e.keyCode === 38) {
+      console.log("keyup");
+
+      setActiveSuggestionIndex(
+        activeSuggestionIndex <= hintData.length - 1
+          ? activeSuggestionIndex - 1
+          : hintData.length - 1
+      );
+      if (activeSuggestionIndex === null) {
+        setActiveSuggestionIndex(0);
+        return;
+      }
+      if (activeSuggestionIndex <= 0)
+        setActiveSuggestionIndex(hintData.length - 1);
+      if (
+        activeSuggestionIndex > 0 &&
+        activeSuggestionIndex <= hintData.length - 1
+      )
+        setActiveSuggestionIndex(activeSuggestionIndex - 1);
+    }
+    if (e.keyCode === 40) {
+      console.log("keydown");
+      if (activeSuggestionIndex === null) {
+        setActiveSuggestionIndex(0);
+        return;
+      }
+
+      if (
+        activeSuggestionIndex >= 0 &&
+        activeSuggestionIndex < hintData.length - 1
+      )
+        setActiveSuggestionIndex(activeSuggestionIndex + 1);
+      if (activeSuggestionIndex >= hintData.length - 1)
+        setActiveSuggestionIndex(0);
     }
   };
 
@@ -86,12 +126,14 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   }, [location.pathname]);
 
   const checkOnBlur = (event) => {
+    console.log(event);
     if (event.relatedTarget?.id === "searchSuggestion") {
       return;
     }
+    console.log("setting ShowHintData");
     setShowHintData(false);
   };
-
+  console.log(showHintData);
   return (
     <>
       <Navbar type="light" theme="none" expand="md">
@@ -127,6 +169,7 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
                 placeholder="Search recipes..."
                 value={searchQuery}
                 onKeyPress={handleKeypress}
+                onKeyDown={handleKeypress}
                 onChange={handleChange}
                 onClick={() => setShowHintData(true)}
                 onBlur={(e) => checkOnBlur(e)}
@@ -146,15 +189,19 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
           </NavbarWidth>
         </Nav>
       </Navbar>
-      {isLoading || !showHintData ? null : (
+      {isLoading || showHintData ? null : (
         <SuggestionsList>
           <ListGroup small>
             {hintData.map((hint, index) => (
               <ListGroupItem
                 id="searchSuggestion"
+                tabIndex="0"
                 action
+                active={index === activeSuggestionIndex}
+                theme="light"
                 key={generateHexString(4)}
                 onClick={() => {
+                  console.log("123");
                   setSearchQuery(hint);
                   setShowHintData(false);
                 }}

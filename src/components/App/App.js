@@ -67,6 +67,7 @@ const App = () => {
     axios
       .request(options)
       .then(function (response) {
+        console.log(response.data.feed);
         setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
         setTotalResults(response.data.totalMatchCount);
@@ -182,6 +183,19 @@ const App = () => {
                 )}
               </Masonry>
             </ResponsiveMasonry>
+            {isLoading ||
+            error.isError ||
+            searchQuery === "" ||
+            numResults === 0 ? null : (
+              <Pagination
+                totalResults={totalResults}
+                itemsPerPage={itemsPerPage}
+                getPage={(page) => {
+                  getPage(page);
+                }}
+                currentPage={currentPage}
+              />
+            )}
           </Route>
           <Route path={"/my-recipes"}>
             <MyRecipes />
