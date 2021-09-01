@@ -132,7 +132,7 @@ const App = () => {
                 currentPage={currentPage}
               />
             )}
-            {true && !error.isError ? (
+            {isLoading && !error.isError ? (
               <Spinner />
             ) : (
               <ResponsiveMasonry
