@@ -1,14 +1,14 @@
 import styled from "styled-components";
 
 const Spinner = styled.div`
-  display: inline-block;
-  vertical-align: middle;
-
   background: url("spinner.gif") center center no-repeat;
-  height: 5rem;
-  width: 5rem;
-  background-size: 5rem;
-  margin: 0 auto;
+  height: 8rem;
+  width: 8rem;
+  background-size: 8rem;
+  margin: -4rem -4rem;
+  position: absolute;
+  top: 50vh;
+  left: 50vw;
 `;
 
 export default Spinner;

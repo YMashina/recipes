@@ -132,20 +132,20 @@ const App = () => {
                 currentPage={currentPage}
               />
             )}
-            <ResponsiveMasonry
-              columnsCountBreakPoints={{
-                300: 1,
-                600: 2,
-                900: 3,
-                1200: 4,
-                1500: 5,
-              }}
-            >
-              <Masonry>
-                {true && !error.isError ? (
-                  <Spinner />
-                ) : (
-                  feed.map((feedItem) => {
+            {true && !error.isError ? (
+              <Spinner />
+            ) : (
+              <ResponsiveMasonry
+                columnsCountBreakPoints={{
+                  300: 1,
+                  600: 2,
+                  900: 3,
+                  1200: 4,
+                  1500: 5,
+                }}
+              >
+                <Masonry>
+                  {feed.map((feedItem) => {
                     return (
                       <RecipeCardSmall
                         key={generateHexString()}
@@ -180,10 +180,10 @@ const App = () => {
                         tags={feedItem.content.tags}
                       />
                     );
-                  })
-                )}
-              </Masonry>
-            </ResponsiveMasonry>
+                  })}
+                </Masonry>
+              </ResponsiveMasonry>
+            )}
             {isLoading ||
             error.isError ||
             searchQuery === "" ||
