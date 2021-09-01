@@ -68,7 +68,6 @@ const App = () => {
     axios
       .request(options)
       .then(function (response) {
-        console.log(response.data.feed);
         setNumResults(response.data.totalMatchCount);
         setFeed(response.data.feed);
         setTotalResults(response.data.totalMatchCount);
@@ -143,7 +142,7 @@ const App = () => {
               }}
             >
               <Masonry>
-                {isLoading && !error.isError ? (
+                {true && !error.isError ? (
                   <Spinner />
                 ) : (
                   feed.map((feedItem) => {
@@ -151,6 +150,7 @@ const App = () => {
                       <RecipeCardSmall
                         key={generateHexString()}
                         id={feedItem.content.details.id}
+                        globalId={feedItem.content.details.globalId}
                         name={feedItem.display.displayName}
                         image={feedItem.display.images[0]}
                         video={{

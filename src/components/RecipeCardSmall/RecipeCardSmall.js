@@ -18,6 +18,7 @@ import { toggleScroll } from "../constants";
 
 const RecipeCardSmall = ({
   id,
+  globalId,
   name,
   image,
   time,
@@ -78,6 +79,7 @@ const RecipeCardSmall = ({
         <Modal open={isModalOpen} toggle={toggleModal} size={"lg"}>
           <RecipePage
             id={id}
+            globalId={globalId}
             name={name}
             image={image}
             description={description}

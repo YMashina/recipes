@@ -27,8 +27,9 @@ import {
 } from "../App/constants";
 import { Hint } from "react-autocomplete-hint";
 import SuggestionsList from "../styled/SuggestionsList";
+import CursorOnHover from "../styled/CursorOnHover";
 
-const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
+const Search = ({ requestSearchQuery }) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [myRecipesActive, setMyRecipesActive] = useState(false);
   const location = useLocation();
@@ -59,8 +60,6 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
         console.error(error);
       });
   }, [searchQuery]);
-
-  console.log(showHintData);
 
   useEffect(() => {
     setIsLoading(true);
@@ -135,22 +134,31 @@ const Search = ({ requestSearchQuery, changeItemsPerPage, perPage = 10 }) => {
   return (
     <>
       <Navbar type="light" theme="none" expand="md">
-        <Link to={"/"}>
+        <CursorOnHover>
           <NavbarBrand
             onClick={() => {
-              //history.push("/"); //removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
+              history.push("/"); //removing Link doesn't fix the Warning: validateDOMNesting(...): <a> cannot appear as a descendant of <a>.
               //toggleActive(false);
             }}
           >
             Yummly recipes
           </NavbarBrand>
-        </Link>
+        </CursorOnHover>
 
         <Nav navbar>
           <NavItem onClick={setMyRecipesActive}>
-            <Link to={"/my-recipes"}>
-              <NavLink active={myRecipesActive}>My recipes</NavLink>
-            </Link>
+            <CursorOnHover>
+              <NavLink
+                onClick={() => {
+                  history.push("/my-recipes");
+                }}
+                active={
+                  typeof myRecipesActive === "boolean" ? myRecipesActive : false
+                }
+              >
+                My recipes
+              </NavLink>
+            </CursorOnHover>
           </NavItem>
         </Nav>
 

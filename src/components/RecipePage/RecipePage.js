@@ -1,19 +1,26 @@
 import { useLocation, useParams } from "react-router-dom";
 import { Alert, Button, ModalBody } from "shards-react";
 import RecipeHeading from "../styled/RecipeHeading";
-import RecipePageStyleDiv from "../styled/RecipePageStyleDiv";
 import RecipePageImgRounded from "../styled/RecipePageImgRounded";
-import { Container, Row, Col } from "shards-react";
-import IngredientTable from "../styled/IngredientTable";
 import RecipePageDiv from "../styled/RecipePageDiv";
 import { generateHexString } from "../App/constants";
 import RecipeQuickData from "../RecipeQuickData/RecipeQuickData";
 import Scroll from "../styled/Scroll";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import RecipeActionButton from "../RecipeActionButton/RecipeActionButton";
+import axios from "axios";
+import Spinner from "../styled/Spinner";
+import {
+  makeOptions,
+  prepareImages,
+  clickRemoveRecipe,
+  clickAddRecipe,
+} from "./constants";
+import Gallery from "react-photo-gallery";
 
 const RecipePage = ({
   id,
+  globalId,
   name,
   image,
   description,
@@ -26,6 +33,8 @@ const RecipePage = ({
   tags,
 }) => {
   const [isError, setIsError] = useState(false);
+  const [isLoadingImages, setIsLoadingImages] = useState(true);
+  const [images, setImages] = useState([]);
   const [update, setUpdate] = useState(false);
   const location = useLocation();
   const [showAlert, setShowAlert] = useState({
@@ -34,83 +43,27 @@ const RecipePage = ({
     alertTheme: "",
   });
 
-  const clickAddRecipe = () => {
-    try {
-      localStorage.setItem(
-        id,
-        JSON.stringify({
-          name,
-          image,
-          description,
-          ingredients,
-          preparationSteps,
-          video,
-          rating,
-          time,
-          numberOfServings,
-          tags,
-        })
-      );
-      setUpdate(!update);
-      setShowAlert({
-        visible: true,
-        alertText: "Recipe added successfully",
-        alertTheme: "success",
+  const getImages = useCallback(async () => {
+    const options = makeOptions(globalId);
+    await axios
+      .request(options)
+      .then(function (response) {
+        prepareImages(response.data.reviewImages).then((response) => {
+          setImages(response);
+        });
+      })
+      .catch(function (error) {
+        console.error(error);
       });
-      showAlertFunction();
-    } catch (e) {
-      setShowAlert({
-        visible: true,
-        alertText: "Something went wrong while adding",
-        alertTheme: "danger",
-      });
-      showAlertFunction();
-    }
-  };
+  }, [id]);
 
-  const clickRemoveRecipe = (id) => {
-    try {
-      localStorage.removeItem(id);
-
-      setUpdate(!update);
-      setShowAlert({
-        visible: true,
-        alertText: "Recipe removed successfully",
-        alertTheme: "success",
-      });
-      showAlertFunction();
-      setTimeout(() => {
-        if (location.pathname === "/my-recipes") window.location.reload();
-      }, 2000);
-    } catch (e) {
-      setShowAlert({
-        visible: true,
-        alertText: "Something went wrong while removing",
-        alertTheme: "danger",
-      });
-      showAlertFunction();
-    }
-  };
-  let interval = null;
-  const showAlertFunction = () => {
-    clearInterval(interval);
-    interval = setInterval(() => {
-      setShowAlert({ visible: false });
-      clearInterval(interval);
-      interval = null;
-    }, 2000);
-  };
+  useEffect(() => {
+    getImages().then(() => setIsLoadingImages(false));
+  }, [id]);
 
   return (
     <ModalBody>
       <Scroll>
-        <Alert
-          className="mb-3"
-          open={showAlert.visible}
-          theme={showAlert.alertTheme}
-        >
-          {showAlert.alertText}
-        </Alert>
         <RecipePageImgRounded src={image} />
         <RecipeHeading>{name}</RecipeHeading>
         <RecipePageDiv>
@@ -120,14 +73,31 @@ const RecipePage = ({
             rating={rating ? rating : null}
           />
         </RecipePageDiv>
-
         <RecipeActionButton
           update={update}
           id={id}
-          clickAddRecipe={clickAddRecipe}
-          clickRemoveRecipe={() => clickRemoveRecipe(id)}
+          clickAddRecipe={() =>
+            clickAddRecipe(
+              id,
+              name,
+              image,
+              description,
+              ingredients,
+              preparationSteps,
+              video,
+              rating,
+              time,
+              numberOfServings,
+              tags,
+              setUpdate,
+              update,
+              setShowAlert
+            )
+          }
+          clickRemoveRecipe={() =>
+            clickRemoveRecipe(id, setUpdate, update, setShowAlert, location)
+          }
         />
-
         <RecipePageDiv>
           {description ? description : "No description."}
         </RecipePageDiv>
@@ -149,20 +119,12 @@ const RecipePage = ({
         <RecipePageDiv>
           {preparationSteps
             ? preparationSteps.map((step, index) => (
-                <RecipePageDiv>
+                <RecipePageDiv key={generateHexString(4)}>
                   {index + 1}. {step}
                 </RecipePageDiv>
               ))
             : "No preparation steps data."}
         </RecipePageDiv>
-
-        <RecipeActionButton
-          update={update}
-          id={id}
-          clickAddRecipe={clickAddRecipe}
-          clickRemoveRecipe={() => clickRemoveRecipe(id)}
-        />
-
         {video.originalVideoUrl && !isError ? (
           <RecipePageDiv>
             <video width="100%" controls>
@@ -182,6 +144,10 @@ const RecipePage = ({
           </RecipePageDiv>
         ) : null}
         {isError ? <div>Sorry, the video is currently unavailable.</div> : null}
+
+        <RecipeHeading>Gallery</RecipeHeading>
+        {isLoadingImages ? <Spinner /> : null}
+        {images && <Gallery photos={images} />}
       </Scroll>
     </ModalBody>
   );
