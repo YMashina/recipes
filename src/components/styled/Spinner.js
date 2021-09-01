@@ -5,10 +5,10 @@ const Spinner = styled.div`
   height: 8rem;
   width: 8rem;
   background-size: 8rem;
-  margin: -4rem -4rem;
-  position: absolute;
-  top: 50vh;
-  left: 50vw;
+  ${(props) =>
+    props.mainPage
+      ? "margin: -4rem -4rem;\n  position: absolute;\n  top: 50vh;\n  left: 50vw;"
+      : null}
 `;
 
 export default Spinner;

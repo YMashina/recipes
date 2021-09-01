@@ -133,7 +133,7 @@ const App = () => {
               />
             )}
             {isLoading && !error.isError ? (
-              <Spinner />
+              <Spinner mainPage={true} />
             ) : (
               <ResponsiveMasonry
                 columnsCountBreakPoints={{
