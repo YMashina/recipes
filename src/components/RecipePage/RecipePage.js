@@ -144,10 +144,10 @@ const RecipePage = ({
           </RecipePageDiv>
         ) : null}
         {isError ? <div>Sorry, the video is currently unavailable.</div> : null}
+        {images.length ? <RecipeHeading>Gallery</RecipeHeading> : null}
 
-        <RecipeHeading>Gallery</RecipeHeading>
         {isLoadingImages ? <Spinner mainPage={false} /> : null}
-        {images && <Gallery photos={images} />}
+        {images.length ? <Gallery photos={images} /> : null}
       </Scroll>
     </ModalBody>
   );
