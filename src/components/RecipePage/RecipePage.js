@@ -17,6 +17,7 @@ import {
   clickAddRecipe,
 } from "./constants";
 import Gallery from "react-photo-gallery";
+import Carousel, { Modal, ModalGateway } from "react-images";
 
 const RecipePage = ({
   id,
@@ -31,6 +32,7 @@ const RecipePage = ({
   time,
   numberOfServings,
   tags,
+  setIsGalleryOpen,
 }) => {
   const [isError, setIsError] = useState(false);
   const [isLoadingImages, setIsLoadingImages] = useState(true);
@@ -42,6 +44,21 @@ const RecipePage = ({
     alertText: "",
     alertTheme: "",
   });
+
+  const [currentImage, setCurrentImage] = useState(0);
+  const [viewerIsOpen, setViewerIsOpen] = useState(false);
+
+  const openLightbox = useCallback((event, { photo, index }) => {
+    setCurrentImage(index);
+    setViewerIsOpen(true);
+    setIsGalleryOpen(true);
+  }, []);
+
+  const closeLightbox = () => {
+    setCurrentImage(0);
+    setViewerIsOpen(false);
+    setIsGalleryOpen(false);
+  };
 
   const getImages = useCallback(async () => {
     const options = makeOptions(globalId);
@@ -147,7 +164,25 @@ const RecipePage = ({
         {images.length ? <RecipeHeading>Gallery</RecipeHeading> : null}
 
         {isLoadingImages ? <Spinner mainPage={false} /> : null}
-        {images.length ? <Gallery photos={images} /> : null}
+        {images.length ? (
+          <>
+            <Gallery photos={images} onClick={openLightbox} />
+            <ModalGateway>
+              {viewerIsOpen ? (
+                <Modal onClose={closeLightbox}>
+                  <Carousel
+                    currentIndex={currentImage}
+                    views={images.map((x) => ({
+                      ...x,
+                      srcset: x.srcSet,
+                      caption: x.title,
+                    }))}
+                  />
+                </Modal>
+              ) : null}
+            </ModalGateway>
+          </>
+        ) : null}
       </Scroll>
     </ModalBody>
   );

@@ -31,9 +31,14 @@ const RecipeCardSmall = ({
   tags,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
   const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-    toggleScroll(isModalOpen);
+    console.log("modal toggle");
+    if (!isGalleryOpen) {
+      setIsModalOpen(!isModalOpen);
+      toggleScroll(isModalOpen);
+    }
   };
   const makeTagsArray = () => {
     const courseTags = tags.course
@@ -50,10 +55,16 @@ const RecipeCardSmall = ({
     return [...courseTags, ...dishTags, ...techniqueTags];
   };
   const tagsDisplayArray = useMemo(() => makeTagsArray(), [tags]);
-
+  console.log("isGalleryOpen: " + isGalleryOpen);
   return (
     <CardsDiv>
-      <Card onClick={toggleModal} style={{ maxWidth: "20rem" }}>
+      <Card
+        onClick={() => {
+          console.log("card onclick");
+          toggleModal();
+        }}
+        style={{ maxWidth: "20rem" }}
+      >
         <CardImg top src={image} />
         <CardBody>
           <CardTitle>{name}</CardTitle>
@@ -90,6 +101,7 @@ const RecipeCardSmall = ({
             time={time}
             numberOfServings={numberOfServings}
             tags={tags}
+            setIsGalleryOpen={setIsGalleryOpen}
           />
         </Modal>
       </ModalDiv>
