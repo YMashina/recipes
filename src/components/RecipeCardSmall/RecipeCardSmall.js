@@ -34,7 +34,6 @@ const RecipeCardSmall = ({
   const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const toggleModal = () => {
-    console.log("modal toggle");
     if (!isGalleryOpen) {
       setIsModalOpen(!isModalOpen);
       toggleScroll(isModalOpen);
@@ -55,12 +54,11 @@ const RecipeCardSmall = ({
     return [...courseTags, ...dishTags, ...techniqueTags];
   };
   const tagsDisplayArray = useMemo(() => makeTagsArray(), [tags]);
-  console.log("isGalleryOpen: " + isGalleryOpen);
+
   return (
     <CardsDiv>
       <Card
         onClick={() => {
-          console.log("card onclick");
           toggleModal();
         }}
         style={{ maxWidth: "20rem" }}

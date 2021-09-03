@@ -65,6 +65,7 @@ const RecipePage = ({
     await axios
       .request(options)
       .then(function (response) {
+        //console.log(response.data);
         prepareImages(response.data.reviewImages).then((response) => {
           setImages(response);
         });
